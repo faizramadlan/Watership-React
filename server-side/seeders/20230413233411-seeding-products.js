@@ -8,8 +8,8 @@ const productsData = [
       "Build and deploy a full-stack, production-ready web app with Supabase, React, and Postgres.",
     price: 140000,
     mainImg: "https://i.ytimg.com/vi/zBZgdTb-dns/maxresdefault.jpg",
-    categoryId: 1,
-    authorId: 1,
+    categoryName: "Web Development",
+    authorEmail: "admin@admin.com",
   },
   {
     name: "Modern JavaScript Full Course",
@@ -17,8 +17,8 @@ const productsData = [
     description: "Learn how to build real-world applications with JavaScript",
     price: 80000,
     mainImg: "https://i.ytimg.com/vi/DHjqpvDnNGE/maxresdefault.jpg",
-    categoryId: 2,
-    authorId: 1,
+    categoryName: "Mobile Development",
+    authorEmail: "admin@admin.com",
   },
   {
     name: "Next.js Firebase Full Course",
@@ -26,8 +26,8 @@ const productsData = [
     description: "Build a full-stack app with React, Firebase, and Next.js",
     price: 120000,
     mainImg: "https://i.ytimg.com/vi/TNhaISOUy6Q/maxresdefault.jpg",
-    categoryId: 1,
-    authorId: 1,
+    categoryName: "Web Development",
+    authorEmail: "admin@admin.com",
   },
   {
     name: "Flutter Firebase",
@@ -35,8 +35,8 @@ const productsData = [
     description: "Build a full-stack Flutter app with Firebase from scratch.",
     price: 100000,
     mainImg: "https://i.ytimg.com/vi/lHhRhPV--G0/maxresdefault.jpg",
-    categoryId: 3,
-    authorId: 1,
+    categoryName: "Data Science",
+    authorEmail: "admin@admin.com",
   },
   {
     name: "Python Django Full Course",
@@ -44,8 +44,8 @@ const productsData = [
     description: "Learn how to build web applications with Python and Django",
     price: 90000,
     mainImg: "https://i.ytimg.com/vi/F5mRW0jo-U4/maxresdefault.jpg",
-    categoryId: 2,
-    authorId: 1,
+    categoryName: "Mobile Development",
+    authorEmail: "admin@admin.com",
   },
   {
     name: "GraphQL Full Course",
@@ -54,8 +54,8 @@ const productsData = [
       "Learn how to build a GraphQL server and client with Node.js and React",
     price: 110000,
     mainImg: "https://i.ytimg.com/vi/ed8SzALpx1Q/maxresdefault.jpg",
-    categoryId: 1,
-    authorId: 1,
+    categoryName: "Web Development",
+    authorEmail: "admin@admin.com",
   },
   {
     name: "React - The full course",
@@ -64,18 +64,49 @@ const productsData = [
       "Learn the fundamentals of React.js by building five apps from scratch.",
     price: "200000",
     mainImg: "https://img.youtube.com/vi/Tn6-PIqc4UM/maxresdefault.jpg",
-    categoryId: "1",
-    authorId: "1",
+    categoryName: "Web Development",
+    authorEmail: "admin@admin.com",
   },
 ];
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    let toSeed = productsData.map((ele) => {
-      ele.updatedAt = ele.createdAt = new Date();
-      return ele;
+    // First, get all categories to map names to IDs
+    const categories = await queryInterface.sequelize.query(
+      'SELECT id, name FROM "Categories";',
+      { type: queryInterface.sequelize.QueryTypes.SELECT }
+    );
+    
+    const categoryMap = {};
+    categories.forEach(cat => {
+      categoryMap[cat.name] = cat.id;
     });
-    // console.log(toSeed);
+
+    // Get all users to map emails to IDs
+    const users = await queryInterface.sequelize.query(
+      'SELECT id, email FROM "Users";',
+      { type: queryInterface.sequelize.QueryTypes.SELECT }
+    );
+    
+    const userMap = {};
+    users.forEach(user => {
+      userMap[user.email] = user.id;
+    });
+
+    // Map products data to include actual category and author IDs
+    let toSeed = productsData.map((ele) => {
+      return {
+        ...ele,
+        categoryId: categoryMap[ele.categoryName],
+        authorId: userMap[ele.authorEmail],
+        updatedAt: new Date(),
+        createdAt: new Date(),
+      };
+    });
+
+    // Remove categoryName and authorEmail from the final data
+    toSeed = toSeed.map(({ categoryName, authorEmail, ...rest }) => rest);
+
     await queryInterface.bulkInsert("Products", toSeed, {});
   },
 

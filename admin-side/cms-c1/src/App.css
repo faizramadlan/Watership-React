@@ -13,6 +13,11 @@ input::-webkit-inner-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
+html, body, #root {
+  transition: background-color 0.4s, color 0.4s;
+}
+
 /* #root {
   max-width: 1280px;
   margin: 0 auto;

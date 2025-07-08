@@ -1,40 +1,51 @@
 import { Link } from "react-router-dom";
 
 export default function Card({ data }) {
+  const enrolled = (JSON.parse(localStorage.getItem('enrolledCourses') || '[]').find(course => course.id === data.id));
   return (
-    <a href="#" class="group relative block overflow-hidden text-white">
-      <img
-        src={data.mainImg}
-        alt=""
-        class="h-64 w-full object-cover transition duration-500 group-hover:scale-105 sm:h-72"
-      />
-
-      <div class="relative border border-gray-100 bg-slate-400 p-6">
-        <span class="whitespace-nowrap bg-slate-900 px-3 py-1.5 text-xs font-medium">
-          {data.Category.name}
-        </span>
-
-        <h3 class="mt-4 text-lg font-medium">{data.name}</h3>
-        <h3 class="mt-1 text-s font-small">By {data.User.username}</h3>
-
-        <p class="mt-1.5 text-sm">
-          {" "}
-          {new Intl.NumberFormat("id-ID", {
-            style: "currency",
-            currency: "IDR",
-          }).format(data.price)}
-        </p>
-
-        <form class="mt-4">
+    <div className="card w-full max-w-xs bg-white dark:bg-gray-900 shadow-xl rounded-xl overflow-hidden transition-colors duration-500 group hover:shadow-2xl hover:scale-105 relative">
+      {enrolled && (
+        <span className="absolute top-3 left-3 bg-green-400 text-black px-3 py-1 rounded-full text-xs font-bold shadow animate-pulse z-10">Enrolled ✅</span>
+      )}
+      <figure className="relative w-full aspect-video bg-gray-800 rounded-t-xl overflow-hidden">
+        <img
+          src={data.mainImg}
+          alt={data.name}
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+          onError={e => { e.target.src = '/fallback-image.png'; }}
+        />
+      </figure>
+      <div className="card-body p-5 flex flex-col justify-between h-56">
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <span className="badge bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 px-3 py-1 text-xs font-semibold rounded">
+              {data.Category.name}
+            </span>
+            <span className="text-xs text-gray-500 dark:text-gray-400">By {data.User.username}</span>
+          </div>
+          <h2 className="card-title text-lg font-bold text-gray-900 dark:text-blue-200 mb-1 transition-colors duration-500">
+            {data.name}
+          </h2>
+          <p className="text-sm text-gray-700 dark:text-gray-300 mb-2 line-clamp-2 transition-colors duration-500">
+            {data.description}
+          </p>
+        </div>
+        <div className="flex items-center justify-between mt-2">
+          <span className="font-semibold text-base text-green-600 dark:text-green-400">
+            {new Intl.NumberFormat("id-ID", {
+              style: "currency",
+              currency: "IDR",
+            }).format(data.price)}
+          </span>
           <Link
             to={`/courses/${data.id}`}
-            class="block w-full rounded bg-slate-900 p-4 text-sm font-medium transition hover:scale-105 align-middle"
+            className="btn btn-primary btn-sm rounded transition-transform duration-200 hover:scale-105"
           >
             Details
           </Link>
-        </form>
+        </div>
       </div>
-    </a>
+    </div>
   );
 }
 

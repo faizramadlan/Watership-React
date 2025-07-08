@@ -1,10 +1,25 @@
-import reactLogo from "../assets/react.svg";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useEffect, useState } from "react";
 
 export default function Navbar() {
   const navigate = useNavigate();
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem("theme") === "dark";
+  });
+
+  useEffect(() => {
+    const html = document.documentElement;
+    if (darkMode) {
+      html.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      html.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  }, [darkMode]);
+
   function handleLogout(e) {
     e.preventDefault();
     localStorage.clear();
@@ -21,42 +36,32 @@ export default function Navbar() {
     navigate("/login");
   }
   return (
-    <header className="bg-black bg-opacity-50 shadow-md">
-      <nav className="container mx-auto px-4 py-4 flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <img src={reactLogo} alt="React logo" className="w-10" />
-          <h1 className="text-lg text-white font-bold">Watership</h1>
-          <NavLink
-            to="/"
-            className="text-white hover:text-blue-400 transition-colors duration-300"
-          >
-            Dashboard
-          </NavLink>
-          <NavLink
-            to="/categories"
-            className="text-white hover:text-blue-400 transition-colors duration-300"
-          >
-            Categories
-          </NavLink>
-          <NavLink
-            to="/register-admin"
-            className="text-white hover:text-blue-400 transition-colors duration-300"
-          >
-            Register Admin
-          </NavLink>
-        </div>
-        <div className="flex items-center space-x-4">
-          <span className="text-white">
-            Welcome, {localStorage.logged_user}
-          </span>
-          <button
-            onClick={handleLogout}
-            className="text-white hover:bg-orange-500 hover:text-blue-500 py-2 px-4 border border-white rounded"
-          >
-            Logout
-          </button>
-        </div>
-      </nav>
-    </header>
+    <nav className="w-full bg-gray-950 dark:bg-black shadow-lg py-3 px-4 flex items-center justify-between sticky top-0 z-50 transition-colors duration-500">
+      {/* Logo and nav */}
+      <div className="flex items-center gap-4">
+        <span className="text-pink-500 text-2xl font-extrabold tracking-tight hover:scale-105 transition-transform">🔥</span>
+        <h1 className="text-lg text-white font-extrabold tracking-tight mr-4">Fireship Admin</h1>
+        <NavLink to="/" className={({isActive}) => `text-white font-bold px-3 py-1 rounded-full hover:bg-pink-500 hover:text-white transition ${isActive ? 'bg-pink-500' : ''}`}>Dashboard</NavLink>
+        <NavLink to="/categories" className={({isActive}) => `text-white font-bold px-3 py-1 rounded-full hover:bg-pink-500 hover:text-white transition ${isActive ? 'bg-pink-500' : ''}`}>Categories</NavLink>
+        <NavLink to="/register-admin" className={({isActive}) => `text-white font-bold px-3 py-1 rounded-full hover:bg-pink-500 hover:text-white transition ${isActive ? 'bg-pink-500' : ''}`}>Register Admin</NavLink>
+      </div>
+      {/* Right side: welcome, dark mode, logout */}
+      <div className="flex items-center gap-2">
+        <span className="text-white font-semibold mr-2 hidden md:inline">Welcome, {localStorage.logged_user}</span>
+        <button
+          onClick={() => setDarkMode((prev) => !prev)}
+          className="text-yellow-400 hover:text-pink-500 text-xl p-2 rounded-full transition-colors duration-200"
+          title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+        >
+          {darkMode ? "☀️" : "🌙"}
+        </button>
+        <button
+          onClick={handleLogout}
+          className="bg-pink-500 hover:bg-pink-600 text-white font-bold px-4 py-2 rounded-full shadow transition-all duration-200 ml-2"
+        >
+          Logout
+        </button>
+      </div>
+    </nav>
   );
 }

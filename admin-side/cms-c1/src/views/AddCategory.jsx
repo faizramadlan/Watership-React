@@ -53,37 +53,34 @@ export default function FormCategory() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-950 via-gray-900 to-black px-4 py-12">
       <form
         onSubmit={handleSubmit}
-        className="max-w-md mx-auto bg-white px-4 py-5 rounded-lg mt-7"
+        className="max-w-lg w-full bg-white dark:bg-gray-900 rounded-2xl shadow-2xl py-10 px-8 flex flex-col gap-4 border-4 border-pink-500 relative animate-fadeIn"
       >
+        <span className="absolute -top-6 left-1/2 -translate-x-1/2 bg-yellow-400 text-black px-4 py-1 rounded-full text-xs font-bold shadow animate-bounce z-10">🔥 Add/Edit Category</span>
         {id ? (
-          <h1 className="text-3xl text-black font-bold mb-8">Edit Category</h1>
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-pink-500 mb-4 text-center drop-shadow-lg">Edit Category</h1>
         ) : (
-          <h1 className="text-3xl text-black font-bold mb-8">Add Category</h1>
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-pink-500 mb-4 text-center drop-shadow-lg">Add Category</h1>
         )}
-        <div className="mb-4">
-          <label htmlFor="name" className="block text-gray-700 font-bold mb-2">
-            Name
-          </label>
+        <div>
+          <label htmlFor="name" className="block text-gray-700 dark:text-gray-200 font-bold mb-1">Name</label>
           <input
             type="text"
             name="name"
             id="name"
             value={form.name}
             onChange={handleInputChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 bg-gray-200 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="border-2 border-gray-300 dark:border-gray-700 rounded-lg w-full py-2 px-3 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-500 transition"
           />
         </div>
-        <div className="text-center">
-          <button
-            type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          >
-            Submit
-          </button>
-        </div>
+        <button
+          type="submit"
+          className="bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-8 rounded-full text-lg shadow-lg transition-all duration-200 mt-4 animate-bounce"
+        >
+          {id ? 'Update Category' : 'Add Category'}
+        </button>
       </form>
     </div>
   );
